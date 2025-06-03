@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ky38e5ksh-python-ci
+  namespace: tssc-gitops
+  finalizers: ["resources-finalizer.argocd.argoproj.io"]
+spec:
+  project: default
+  source:
+    path: ./components/ky38e5ksh-python/overlays/ci
+    repoURL: https://github.com/rhtap-rhdh-qe/ky38e5ksh-python-gitops.git
+    targetRevision: main
+  destination:
+    namespace: tssc-app-ci
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    managedNamespaceMetadata:
+      labels:
+        argocd.argoproj.io/managed-by: tssc-gitops
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - PruneLast=true
